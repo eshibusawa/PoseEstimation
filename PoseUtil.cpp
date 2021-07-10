@@ -1,6 +1,6 @@
 // This file is part of PoseEstimation.
 // This file is a modified version of EPnP <http://cvlab.epfl.ch/EPnP/index.php>, see 2-Clause BSD license below.
-// Copyright (c) 2021, Eijiro Shibusawa
+// Copyright (c) 2021, Eijiro Shibusawa <phd_kimberlite@yahoo.co.jp>
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without

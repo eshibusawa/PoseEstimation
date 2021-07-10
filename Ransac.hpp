@@ -1,5 +1,5 @@
 // This file is part of PoseEstimation.
-// Copyright (c) 2021, Eijiro Shibusawa
+// Copyright (c) 2021, Eijiro Shibusawa <phd_kimberlite@yahoo.co.jp>
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without
@@ -104,6 +104,9 @@ public:
 
 		if (!m_isRefineNeeded)
 		{
+			p = bestParameters;
+			nInlier = bestNInliers;
+			indices.swap(bestIndices);
 			return true;
 		}
 

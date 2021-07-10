@@ -1,5 +1,5 @@
 // This file is part of PoseEstimation.
-// Copyright (c) 2021, Eijiro Shibusawa
+// Copyright (c) 2021, Eijiro Shibusawa <phd_kimberlite@yahoo.co.jp>
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without
@@ -101,7 +101,7 @@ protected:
 		epsilon = m_epsilon;
 	}
 
-	bool iteration(const std::vector<int> &selected, RT<FloatType> &p, int &nInliar, std::vector<int> &indices)
+	bool iteration(const std::vector<int> &selected, RT<FloatType> &p, int &nInlier, std::vector<int> &indices)
 	{
 		const size_t minSet = 4;
 		if ((m_nCorrespondences < minSet) || (selected.size() < minSet))
@@ -111,7 +111,7 @@ protected:
 
 		m_solver.set_maximum_number_of_correspondences(m_nCorrespondences);
 		double err2 = solveSelected(selected, p);
-		checkInliar(p, nInliar, indices);
+		checkInlier(p, nInlier, indices);
 		return true;
 	}
 
@@ -128,9 +128,9 @@ private:
 		return m_solver.compute_pose(p.R, p.t);
 	}
 
-	void checkInliar(const RT<FloatType> &p, int &nInliar, std::vector<int> &indices)
+	void checkInlier(const RT<FloatType> &p, int &nInlier, std::vector<int> &indices)
 	{
-		nInliar = 0;
+		nInlier = 0;
 		indices.resize(m_nCorrespondences);
 		for (size_t k = 0; k < m_nCorrespondences; k++)
 		{
@@ -147,7 +147,7 @@ private:
 			if (err2 < m_threshold)
 			{
 				indices[k] = 1;
-				nInliar++;
+				nInlier++;
 			}
 			else
 			{
