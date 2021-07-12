@@ -5,6 +5,16 @@ project(PoseEstimation)
 message(" C++ module")
 if (UNIX)
 	find_package(PkgConfig)
+	pkg_search_module(CppUnit cppunit)
+	set(CppUnit_LIBRARY_DIRS ${CppUnit_LIBDIR})
+	set(CppUnit_LIBRARIES ${CppUnit_LIBRARIES} CACHE STRING "")
+
+	set(CPPUNIT_FOUND "")
+	if (CppUnit_LIBRARIES)
+		message("   CppUnit enabled")
+		set(CPPUNIT_FOUND TRUE)
+	endif ()
+
 	find_package(Eigen3 REQUIRED eigen3)
 	set(EIGEN3_FOUND "")
 	if (EIGEN3_INCLUDE_DIR)
@@ -21,6 +31,16 @@ else ()
 	set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3")
 	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0 -g")
 endif()
+
+if (CPPUNIT_FOUND)
+	add_executable(FivePointTest
+		UnitTestMain.cpp
+		FivePointTest.cpp
+		)
+	target_include_directories(FivePointTest PRIVATE ${CppUnit_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ./)
+	target_link_libraries(FivePointTest ${CppUnit_LIBRARIES})
+	install(TARGETS FivePointTest DESTINATION .)
+endif ()
 
 add_executable(EPnPMain
 	EPnPMain.cpp
