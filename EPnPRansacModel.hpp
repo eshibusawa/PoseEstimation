@@ -26,8 +26,8 @@
 // of the authors and should not be interpreted as representing official policies,
 //   either expressed or implied, of the FreeBSD Project.
 
-#ifndef EPNP_RANSAC_MODELHPP_
-#define EPNP_RANSAC_MODELHPP_
+#ifndef EPNP_RANSAC_MODEL_HPP_
+#define EPNP_RANSAC_MODEL_HPP_
 
 #include <EPnP.hpp>
 
@@ -45,9 +45,9 @@ class RansacModel
 {
 public:
 	RansacModel() :
-		m_solver()
-		, m_nCorrespondences(0)
+		m_nSet(0)
 		, m_epsilon(0.4f)
+		, m_solver()
 		, m_threshold(0)
 		, m_uc(0)
 		, m_vc(0)
@@ -64,12 +64,12 @@ public:
 
 		m_us.push_back(u);
 		m_us.push_back(v);
-		m_nCorrespondences++;
+		m_nSet++;
 	}
 
 	void resetCorrespondence()
 	{
-		m_nCorrespondences = 0;
+		m_nSet = 0;
 		m_us.resize(0);
 		m_pws.resize(0);
 	}
@@ -94,35 +94,27 @@ public:
 	}
 
 protected:
-	void getModelParameters(int &minSet, int &nSet, float &epsilon)
-	{
-		minSet = 4;
-		nSet = m_nCorrespondences;
-		epsilon = m_epsilon;
-	}
-
 	bool iteration(const std::vector<int> &selected, RT<FloatType> &p, int &nInlier, std::vector<int> &indices)
 	{
-		const size_t minSet = 4;
-		if ((m_nCorrespondences < minSet) || (selected.size() < minSet))
+		if ((m_nSet < m_minSet) || (selected.size() < m_minSet))
 		{
 			return false;
 		}
 
-		m_solver.set_maximum_number_of_correspondences(m_nCorrespondences);
-		double err2 = solveSelected(selected, p);
+		m_solver.set_maximum_number_of_correspondences(m_nSet);
+		FloatType err2 = solveSelected(selected, p);
 		checkInlier(p, nInlier, indices);
 		return true;
 	}
 
 private:
-	double solveSelected(const std::vector<int> &selected, RT<FloatType> &p)
+	FloatType solveSelected(const std::vector<int> &selected, RT<FloatType> &p)
 	{
 		m_solver.reset_correspondences();
 		for (size_t k = 0; k < selected.size(); k++)
 		{
-			const size_t ius = 2*k;
-			const size_t ipws = 3*k;
+			const size_t ius = 2 * selected[k];
+			const size_t ipws = 3 * selected[k];
 			m_solver.add_correspondence(m_pws[ipws], m_pws[ipws + 1], m_pws[ipws + 2], m_us[ius], m_us[ius + 1]);
 		}
 		return m_solver.compute_pose(p.R, p.t);
@@ -131,8 +123,8 @@ private:
 	void checkInlier(const RT<FloatType> &p, int &nInlier, std::vector<int> &indices)
 	{
 		nInlier = 0;
-		indices.resize(m_nCorrespondences);
-		for (size_t k = 0; k < m_nCorrespondences; k++)
+		indices.resize(m_nSet);
+		for (size_t k = 0; k < m_nSet; k++)
 		{
 			const size_t ius = 2*k;
 			const size_t ipws = 3*k;
@@ -156,9 +148,14 @@ private:
 		}
 	}
 
-	epnp<FloatType> m_solver;
-	size_t m_nCorrespondences;
+protected:
+	static const size_t m_minSet; // minimum data number for parameter esimation
+	static const bool m_acceptArbitraryNSet; // if true, this model accepts arbitrary data number for parameter esimation
+	size_t m_nSet; // whole data number
 	float m_epsilon; // propotion of outliers
+
+private:
+	epnp<FloatType> m_solver;
 	FloatType m_threshold; // threshold of reprojection error
 	FloatType m_uc; // principal point uc [px]
 	FloatType m_vc; // principal point vc [px]
@@ -167,6 +164,11 @@ private:
 	std::vector<FloatType> m_us; // 2D points
 	std::vector<FloatType> m_pws; // 3D points
 };
+
+template <typename FloatType>
+const size_t RansacModel<FloatType>::m_minSet = 4;
+template <typename FloatType>
+const bool RansacModel<FloatType>::m_acceptArbitraryNSet = true;
 }
 
-#endif // EPNP_RANSAC_MODELHPP_
+#endif // EPNP_RANSAC_MODEL_HPP_

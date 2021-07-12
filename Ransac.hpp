@@ -44,7 +44,7 @@ public:
 		, m_rng()
 		, m_maxIterations(300)
 		, m_probability(0.99f)
-		, m_isRefineNeeded(false)
+		, m_refineNeeded(true)
 	{
 	}
 
@@ -56,11 +56,11 @@ public:
 	{
 		// setup (0)
 		bool ret = false;
-		float epsilon = 0; // propotion of outliers
-		int minSet = 0; // minimum data number for parameter esimation
-		int nSet = 0; // whole data number
+		const float epsilon = Model::m_epsilon; // propotion of outliers
+		const int minSet = Model::m_minSet; // minimum data number for parameter esimation
+		const int nSet = Model::m_nSet; // whole data number
+		const bool acceptArbitraryNSet = Model::m_acceptArbitraryNSet;
 		// (0.1)
-		Model::getModelParameters(minSet, nSet, epsilon);
 		if ((minSet <= 0) || (nSet <=0) || (nSet <= minSet))
 		{
 			return false;
@@ -102,7 +102,7 @@ public:
 			}
 		}
 
-		if (!m_isRefineNeeded)
+		if ((!m_refineNeeded) || (!acceptArbitraryNSet))
 		{
 			p = bestParameters;
 			nInlier = bestNInliers;
@@ -131,11 +131,11 @@ public:
 		return true;
 	}
 
-	void setRANSACParameter(int maxIterations, float probability, bool isRefineNeeded)
+	void setRANSACParameter(int maxIterations, float probability, bool refineNeeded)
 	{
 		m_maxIterations = maxIterations;
 		m_probability = probability;
-		m_isRefineNeeded = isRefineNeeded;
+		m_refineNeeded = refineNeeded;
 	}
 
 	void setRNG(uint32_t seed)
@@ -147,7 +147,7 @@ private:
 	std::mt19937 m_rng;
 	int m_maxIterations;
 	float m_probability;
-	bool m_isRefineNeeded;
+	bool m_refineNeeded;
 };
 
 }
