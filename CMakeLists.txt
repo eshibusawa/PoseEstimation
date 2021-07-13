@@ -49,3 +49,10 @@ add_executable(EPnPMain
 target_include_directories(EPnPMain PRIVATE ${EIGEN3_INCLUDE_DIR} ./)
 target_link_libraries(EPnPMain )
 install(TARGETS EPnPMain DESTINATION .)
+
+add_executable(FivePointMain
+	FivePointMain.cpp
+	)
+target_include_directories(FivePointMain PRIVATE ${EIGEN3_INCLUDE_DIR} ./)
+target_link_libraries(FivePointMain )
+install(TARGETS FivePointMain DESTINATION .)
