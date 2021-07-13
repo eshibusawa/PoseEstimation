@@ -76,7 +76,7 @@ public:
 
 		// (0.3)
 		int bestNInliers = 0, candidateNInlier = 0;
-		Parameters bestParameters, candidateParameters;
+		Parameters bestParameters({}), candidateParameters({});
 		std::vector<int> bestIndices, candidateIndices, selected;
 
 		// (1) estimation
