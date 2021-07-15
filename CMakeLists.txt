@@ -48,6 +48,14 @@ if (CPPUNIT_FOUND)
 	target_include_directories(SevenPointTest PRIVATE ${CppUnit_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ./)
 	target_link_libraries(SevenPointTest ${CppUnit_LIBRARIES})
 	install(TARGETS SevenPointTest DESTINATION .)
+
+	add_executable(ThreePointTest
+		UnitTestMain.cpp
+		ThreePointTest.cpp
+		)
+	target_include_directories(ThreePointTest PRIVATE ${CppUnit_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ./)
+	target_link_libraries(ThreePointTest ${CppUnit_LIBRARIES})
+	install(TARGETS ThreePointTest DESTINATION .)
 endif ()
 
 add_executable(EPnPMain
@@ -64,3 +72,10 @@ add_executable(FivePointMain
 target_include_directories(FivePointMain PRIVATE ${EIGEN3_INCLUDE_DIR} ./)
 target_link_libraries(FivePointMain )
 install(TARGETS FivePointMain DESTINATION .)
+
+add_executable(ThreePointMain
+	ThreePointMain.cpp
+	)
+target_include_directories(ThreePointMain PRIVATE ${EIGEN3_INCLUDE_DIR} ./)
+target_link_libraries(ThreePointMain )
+install(TARGETS ThreePointMain DESTINATION .)
