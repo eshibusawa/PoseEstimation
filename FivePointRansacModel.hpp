@@ -25,7 +25,7 @@
 #ifndef FIVE_POINT_RANSAC_MODEL_HPP_
 #define FIVE_POINT_RANSAC_MODEL_HPP_
 
-#include "FivePoint.hpp"
+#include "FivePointUtil.hpp"
 
 #include <iostream>
 #include <limits>
@@ -39,14 +39,14 @@ struct E
 	FloatType E[9];
 };
 
-template <typename FloatType>
-class RansacModel
+template <typename FloatType, typename Model>
+class RansacModel : public Model
 {
 public:
 	RansacModel() :
-		m_nSet(0)
+		Model()
+		, m_nSet(0)
 		, m_epsilon(0.4f)
-		, m_solver()
 		, m_threshold(0)
 		, m_nSolutions(0)
 	{
@@ -57,7 +57,7 @@ public:
 		m_epsilon = epsilon;
 	}
 
-	bool setCorrespondenses(const std::vector<FloatType> &pts1, const std::vector<FloatType> &pts2)
+	bool setCorrespondences(const std::vector<FloatType> &pts1, const std::vector<FloatType> &pts2)
 	{
 		if ((pts1.empty()) || (pts1.size() % 2 != 0) || (pts1.size() != pts2.size()))
 		{
@@ -78,7 +78,7 @@ public:
 protected:
 	bool iteration(const std::vector<int> &selected, E<FloatType> &p, int &nInlier, std::vector<int> &indices)
 	{
-		if ((m_nSet < m_minSet) || (selected.size() < m_minSet))
+		if ((m_nSet < Model::m_minSet) || (selected.size() < Model::m_minSet))
 		{
 			return false;
 		}
@@ -99,7 +99,7 @@ protected:
 private:
 	bool solveSelected(const std::vector<int> &selected)
 	{
-		FloatType pts1[5*2], pts2[5*2];
+		FloatType pts1[Model::m_minSet * 2], pts2[Model::m_minSet * 2];
 		for (size_t k = 0; k < selected.size(); k++)
 		{
 			const size_t idx = 2 * selected[k];
@@ -109,13 +109,15 @@ private:
 			pts2[idx2] = m_pts2[idx];
 			pts2[idx2 + 1] = m_pts2[idx + 1];
 		}
-		return m_solver.getEMatrix(pts1, pts2, m_nSolutions, m_Es);
+		return Model::getMatrix(pts1, pts2, m_nSolutions, m_Es);
 	}
 
 	void checkInlier(E<FloatType> &p, int &nInlier, std::vector<int> &indices)
 	{
 		nInlier = 0;
 		indices.resize(m_nSet);
+		std::fill(indices.begin(), indices.end(), 0);
+
 		FloatType averageError = std::numeric_limits<FloatType>::max();
 		std::vector<int> candidateIndices(m_nSet);
 		int candidateNInlier = 0;
@@ -133,18 +135,7 @@ private:
 			std::fill(candidateIndices.begin(), candidateIndices.end(), 0);
 			for (size_t k = 0; k < m_nSet; k++)
 			{
-				FloatType *p1 = &(m_pts1[2 * k]);
-				FloatType *p2 = &(m_pts2[2 * k]);
-				// Sampson's error
-				FloatType Ep10 = (E[0] * p1[0] + E[1] * p1[1] + E[2]);
-				FloatType Ep11 = (E[3] * p1[0] + E[4] * p1[1] + E[5]);
-				FloatType p2E0 = (p2[0] * E[0] + p2[1] * E[3] + E[6]);
-				FloatType p2E1 = (p2[0] * E[1] + p2[1] * E[4] + E[7]);
-				// p2 * E * p1
-				FloatType p2Ep1 = (p2[0]) * Ep10 + (p2[1]) * Ep11 +
-					(E[6] * p1[0] + E[7] * p1[1] + E[8]);
-
-				FloatType err = p2Ep1 / std::sqrt(p2E0 * p2E0 + p2E1 * p2E1 + Ep10 * Ep10 + Ep11 * Ep11);
+				FloatType err = getSampsonsError(E, &(m_pts1[2 * k]), &(m_pts2[2 * k]));
 				err *= err;
 
 				if (err < m_threshold)
@@ -168,23 +159,16 @@ private:
 	}
 
 protected:
-	static const size_t m_minSet; // minimum data number for parameter esimation
-	static const bool m_acceptArbitraryNSet; // if true, this model accepts arbitrary data number for parameter esimation
 	size_t m_nSet; // whole data number
 	float m_epsilon; // propotion of outliers
 
 private:
-	FivePoint<FloatType> m_solver;
 	FloatType m_threshold;
 	std::vector<FloatType> m_pts1, m_pts2; // 2D point correspondences
 	int m_nSolutions; // number of Essential matrices
 	std::vector<FloatType> m_Es; // Essential matrices (row major)
 };
 
-template <typename FloatType>
-const size_t RansacModel<FloatType>::m_minSet = 5;
-template <typename FloatType>
-const bool RansacModel<FloatType>::m_acceptArbitraryNSet = false;
 }
 
 #endif // FIVE_POINT_RANSAC_MODEL_HPP_

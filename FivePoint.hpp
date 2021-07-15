@@ -64,7 +64,7 @@ public:
 	{
 	}
 
-	bool getEMatrix(const FloatType *pts1, const FloatType *pts2, int &nSolutions, std::vector<FloatType> &Es)
+	bool getMatrix(const FloatType *pts1, const FloatType *pts2, int &nSolutions, std::vector<FloatType> &Es)
 	{
 		getGroebnerBasisMatrix(pts1, pts2);
 		getActionMatrix();
@@ -391,6 +391,10 @@ private:
 		}
 	}
 
+protected:
+	static const size_t m_minSet; // minimum data number for parameter esimation
+	static const bool m_acceptArbitraryNSet; // if true, this model accepts arbitrary data number for parameter esimation
+
 private:
 	void getGroebnerBasisMatrix(const FloatType *pts1, const FloatType *pts2)
 	{
@@ -453,7 +457,10 @@ private:
 	Matrix_10x10 m_mAt; // Action matrix
 	Matrix_9xD m_mEvec; // Essential matrix solutions
 };
-
+template <typename FloatType>
+const size_t FivePoint<FloatType>::m_minSet = 5;
+template <typename FloatType>
+const bool FivePoint<FloatType>::m_acceptArbitraryNSet = false;
 }
 
 #endif // FIVE_POINT_HPP_

@@ -120,6 +120,8 @@ private:
 	{
 		nInlier = 0;
 		indices.resize(m_nSet);
+		std::fill(indices.begin(), indices.end(), 0);
+
 		for (size_t k = 0; k < m_nSet; k++)
 		{
 			const size_t ius = 2*k;

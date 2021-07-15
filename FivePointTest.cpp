@@ -246,7 +246,7 @@ void allTest()
 	int nSolutions = 0;
 	std::vector<FloatType> Es;
 	FivePoint::FivePoint<FloatType> solver;
-	bool ret = solver.getEMatrix(pts1, pts2, nSolutions, Es);
+	bool ret = solver.getMatrix(pts1, pts2, nSolutions, Es);
 	CPPUNIT_ASSERT(ret);
 	for (int k = 0; k < nSolutions; k++)
 	{
