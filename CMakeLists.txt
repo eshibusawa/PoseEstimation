@@ -33,29 +33,17 @@ else ()
 endif()
 
 if (CPPUNIT_FOUND)
-	add_executable(FivePointTest
+	enable_testing()
+	add_executable(PoseEstimationTest
 		UnitTestMain.cpp
 		FivePointTest.cpp
-		)
-	target_include_directories(FivePointTest PRIVATE ${CppUnit_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ./)
-	target_link_libraries(FivePointTest ${CppUnit_LIBRARIES})
-	install(TARGETS FivePointTest DESTINATION .)
-
-	add_executable(SevenPointTest
-		UnitTestMain.cpp
 		SevenPointTest.cpp
-		)
-	target_include_directories(SevenPointTest PRIVATE ${CppUnit_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ./)
-	target_link_libraries(SevenPointTest ${CppUnit_LIBRARIES})
-	install(TARGETS SevenPointTest DESTINATION .)
-
-	add_executable(ThreePointTest
-		UnitTestMain.cpp
 		ThreePointTest.cpp
 		)
-	target_include_directories(ThreePointTest PRIVATE ${CppUnit_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ./)
-	target_link_libraries(ThreePointTest ${CppUnit_LIBRARIES})
-	install(TARGETS ThreePointTest DESTINATION .)
+	target_include_directories(PoseEstimationTest PRIVATE ${CppUnit_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ./)
+	target_link_libraries(PoseEstimationTest ${CppUnit_LIBRARIES})
+	install(TARGETS PoseEstimationTest DESTINATION .)
+	add_test(NAME PoseEstimationTest COMMAND PoseEstimationTest)
 endif ()
 
 add_executable(EPnPMain
