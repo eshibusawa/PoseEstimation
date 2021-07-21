@@ -119,34 +119,6 @@ void getRandomCorrespondences(int n, FloatType *R, FloatType *t, std::vector<Flo
 	mR = mR2*mR1.transpose();
 	mt = mt2 - mR*mt1;
 }
-
-template <typename FloatType>
-inline void getSkewSymmetricMatrix(const FloatType *t, FloatType *T)
-{
-	// skew symmetric matrix
-	T[0] = T[4] = T[8] = 0;
-	T[3] = t[2];
-	T[1] = -T[3];
-	T[2] = t[1];
-	T[6] = -T[2];
-	T[7] = t[0];
-	T[5] = -T[7];
-}
-
-template <typename FloatType>
-inline FloatType getSampsonsError(const FloatType *E, const FloatType *p1, const FloatType *p2)
-{
-	// Sampson's error
-	FloatType Ep10 = (E[0] * p1[0] + E[1] * p1[1] + E[2]);
-	FloatType Ep11 = (E[3] * p1[0] + E[4] * p1[1] + E[5]);
-	FloatType p2E0 = (p2[0] * E[0] + p2[1] * E[3] + E[6]);
-	FloatType p2E1 = (p2[0] * E[1] + p2[1] * E[4] + E[7]);
-	// p2 * E * p1
-	FloatType p2Ep1 = (p2[0]) * Ep10 + (p2[1]) * Ep11 +
-		(E[6] * p1[0] + E[7] * p1[1] + E[8]);
-	return p2Ep1 / std::sqrt(p2E0 * p2E0 + p2E1 * p2E1 + Ep10 * Ep10 + Ep11 * Ep11);
-}
-
 }
 
 #endif // FIVE_POINT_UTIL_HPP_

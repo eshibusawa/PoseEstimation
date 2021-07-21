@@ -81,7 +81,7 @@ bool ransac_test()
 	Eigen::Map< Eigen::Matrix<FloatType, 3, 3, Eigen::RowMajor> > mEstM(estM.E);
 
 	Eigen::Matrix<FloatType, 3, 3, Eigen::RowMajor> mT;
-	FivePoint::getSkewSymmetricMatrix(mt.data(), mT.data());
+	FivePoint::FivePoint<FloatType>::getSkewSymmetricMatrix(mt.data(), mT.data());
 	Eigen::Matrix<FloatType, 3, 3> mTrueM = (mT*mR).normalized();
 	if (std::signbit(mTrueM(0, 0)) != std::signbit(mEstM(0, 0)))
 	{

@@ -25,7 +25,7 @@
 #ifndef FIVE_POINT_RANSAC_MODEL_HPP_
 #define FIVE_POINT_RANSAC_MODEL_HPP_
 
-#include "FivePointUtil.hpp"
+#include "FivePoint.hpp"
 
 #include <iostream>
 #include <limits>
@@ -135,7 +135,7 @@ private:
 			std::fill(candidateIndices.begin(), candidateIndices.end(), 0);
 			for (size_t k = 0; k < m_nSet; k++)
 			{
-				FloatType err = getSampsonsError(E, &(m_pts1[2 * k]), &(m_pts2[2 * k]));
+				FloatType err = FivePoint<FloatType>::getSampsonsError(E, &(m_pts1[2 * k]), &(m_pts2[2 * k]));
 				err *= err;
 
 				if (err < m_threshold)

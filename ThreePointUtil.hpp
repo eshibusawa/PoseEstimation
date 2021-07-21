@@ -22,6 +22,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#ifndef THREE_POINT_UTIL_HPP_
+#define THREE_POINT_UTIL_HPP_
+
+#include "ThreePoint.hpp"
+
 #include <Eigen/Geometry>
 
 #include <random>
@@ -108,3 +113,5 @@ void getRandomCorrespondences(int n, FloatType *R, FloatType *t, FloatType &s, s
 }
 
 }
+
+#endif // THREE_POINT_UTIL_HPP_
