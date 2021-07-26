@@ -22,7 +22,7 @@
 $ cd PoseEstimation
 $ mkdir build
 $ cd build
-$ cmake -DCMAKE_VERBOSE_MAKEFILE=true -DCMAKE_BUILD_TYPE=Release ../
+$ cmake -DCMAKE_VERBOSE_MAKEFILE=true -DCMAKE_BUILD_TYPE=Release ../src
 $ make -j8
 $ make test
 ```
