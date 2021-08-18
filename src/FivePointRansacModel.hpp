@@ -115,8 +115,7 @@ private:
 	void checkInlier(E<FloatType> &p, int &nInlier, std::vector<int> &indices)
 	{
 		nInlier = 0;
-		indices.resize(m_nSet);
-		std::fill(indices.begin(), indices.end(), 0);
+		indices.assign(m_nSet, 0);
 
 		FloatType averageError = std::numeric_limits<FloatType>::max();
 		std::vector<int> candidateIndices(m_nSet);

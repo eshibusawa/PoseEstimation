@@ -119,8 +119,7 @@ private:
 	void checkInlier(const RT<FloatType> &p, int &nInlier, std::vector<int> &indices)
 	{
 		nInlier = 0;
-		indices.resize(m_nSet);
-		std::fill(indices.begin(), indices.end(), 0);
+		indices.assign(m_nSet, 0);
 
 		for (size_t k = 0; k < m_nSet; k++)
 		{

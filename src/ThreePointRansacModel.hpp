@@ -107,8 +107,7 @@ private:
 	void checkInlier(Sim3<FloatType> &p, int &nInlier, std::vector<int> &indices)
 	{
 		nInlier = 0;
-		indices.resize(m_nSet);
-		std::fill(indices.begin(), indices.end(), 0);
+		indices.assign(m_nSet, 0);
 
 		Eigen::Matrix<FloatType, 3, Eigen::Dynamic> mX2h(3, m_nSet);
 		ThreePoint<FloatType>::transformPoints(m_nSet, p.s, p.R, p.t, &(m_pts1[0]), mX2h.data());
